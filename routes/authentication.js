@@ -97,10 +97,4 @@ router.post('/signup', (req, res) => {
 
 });
 
-router.get('/test', (req, res) => {
-    // console.log(validateUser("name", "username", "email@gmail.com", "password"));
-    console.log(db_type);
-    res.send('Test Done, See console');
-})
-
 module.exports = router;

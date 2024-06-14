@@ -11,8 +11,4 @@ async function initializeConnection() {
     return connection;
 }
 
-
-
-
-
 module.exports = { initializeConnection };
