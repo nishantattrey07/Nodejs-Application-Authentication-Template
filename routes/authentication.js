@@ -89,6 +89,58 @@ async function mysql(name, username, email, password, res) {
     }
 }
 
+
+// signin section for mongodb database
+async function mongodbCheckUser(username, password, res) {
+    try {
+        const user =await  User.findOne({ username: username });
+        if (user) {
+            return res.status(404).json({ message: 'User not found' });
+        } else {
+            if (argon2.verify(user.password, password)) {
+                const token = jwt.sign({ username: username, email: user.email }, process.env.jwt_secret);
+                return res.status(200).json({ message: 'User signed in', token: token });
+            }
+            else {
+                return res.status(401).json({ message: 'Invalid credentials' });
+            }
+        }
+    }
+    catch (err) {
+        console.error(err);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+
+}
+
+
+// signin section for mysql database
+
+async function mysqlCheckUser(username,password,res) {
+    const connection = await initializeConnection();
+    try {
+        const [users] = await connection.execute(
+            'SELECT * FROM users WHERE username = ?',
+            [username]
+        );
+        if (users.length === 0) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        const user = users[0];
+        if (await argon2.verify(user.password, password)) {
+            const token = jwt.sign({ username: username, email: user.email }, process.env.jwt_secret);
+            return res.status(200).json({ message: 'User signed in', token: token });
+        } else {
+            return res.status(401).json({ message: 'Invalid credentials' });
+        }
+    } catch (error) {
+        console.error('Database operation failed:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    } finally {
+        await connection.end();
+    }
+}
+
 // Signup Section- Change the Parameters accordingly
 router.post('/signup', (req, res) => {
     const { name, username, email, password } = req.body;
@@ -106,5 +158,15 @@ router.post('/signup', (req, res) => {
     }
 
 });
+
+router.post('/signin', (req, res) => { 
+    const { username, password } = req.body;
+    if (db_type === 'mongodb') {
+        mongodbCheckUser(username,password,res);
+    }
+    else if (db_type === 'mysql') {
+        mysqlCheckUser(username,password,res);
+    }
+})
 
 module.exports = router;
