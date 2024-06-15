@@ -1,6 +1,7 @@
 const { Router } = require('express');
 const zod = require('zod');
 const jwt = require('jsonwebtoken');
+const argon2 = require('argon2');
 const db_type = process.env.db_type;
 const User = require('../database/mongodb');
 const { initializeConnection } = require('../database/mysql');
@@ -37,8 +38,10 @@ async function mongodb(name, username, email, password, res) {
                 username: existingUser.username
             });
         } else {
-            // No existing user found, proceed to create a new user
-            const newUser = new User({ name, username, email, password });
+            // Hash the password before saving the new user
+            const hashedPassword = await argon2.hash(password);
+            // proceed to create a new user
+            const newUser = new User({ name, username, email, password:hashedPassword });
             await newUser.save();
             const token = jwt.sign({ username: username, email: email }, process.env.jwt_secret);
             return res.status(201).json({
@@ -65,13 +68,19 @@ async function mysql(name, username, email, password, res) {
             return res.status(409).json({ message: 'User already exists' });
         }
 
+        // Hash the password before saving the new user
+        const hashedPassword = await argon2.hash(password);
+
         // Insert new user
         await connection.execute(
             'INSERT INTO users (name, username, email, password) VALUES (?, ?, ?, ?)',
-            [name, username, email, password]
+            [name, username, email, hashedPassword]
         );
-
-        return res.status(201).json({ message: 'User registered successfully' });
+        const token = jwt.sign({ username: username, email: email }, process.env.jwt_secret);
+        return res.status(201).json({
+            message: 'User created successfully',
+            token: token
+        });
     } catch (error) {
         console.error('Database operation failed:', error);
         return res.status(500).json({ message: 'Internal server error' });
@@ -84,6 +93,7 @@ async function mysql(name, username, email, password, res) {
 router.post('/signup', (req, res) => {
     const { name, username, email, password } = req.body;
     if (validateUser(name, username, email, password)) { 
+        console.log(db_type);
         if (db_type === 'mongodb') { 
             const result=mongodb(name,username,email,password,res)
         }
