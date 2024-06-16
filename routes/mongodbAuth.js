@@ -1,7 +1,8 @@
 const jwt = require('jsonwebtoken');
 const argon2 = require('argon2');
+const crypto = require('crypto');
 const User = require('../database/mongodb');
-
+const { sendVerificationEmail } = require('../routes/mailer');
 
 
 
@@ -22,14 +23,17 @@ async function mongodbSignup(name, username, email, password, res) {
                 username: existingUser.username
             });
         } else {
+            // Generate a random verification token
+            const verificationToken = crypto.randomBytes(64).toString('hex');
             // Hash the password before saving the new user
             const hashedPassword = await argon2.hash(password);
             // proceed to create a new user
-            const newUser = new User({ name, username, email, password: hashedPassword });
+            const newUser = new User({ name, username, email, password: hashedPassword,verificationToken:verificationToken,isVerified:false });
             await newUser.save();
-            const token = jwt.sign({ username: username, email: email }, process.env.jwt_secret);
+            const token = jwt.sign({ username: username, email: email }, process.env.jwt_secret, { expiresIn: '7d' });
+            sendVerificationEmail(name,email, verificationToken);
             return res.status(201).json({
-                message: 'User created successfully',
+                message: 'Registration successful! Please check your email to verify your account.',
                 token: token
             });
         }

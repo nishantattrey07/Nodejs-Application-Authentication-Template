@@ -9,6 +9,7 @@ const mysqlAuth = require("../middleware/mysqlAuth");
 const { validateUser } = require("../routes/validation");
 const { mongodbSignup, mongodbSignin } = require("../routes/mongodbAuth");
 const { mysqlSignup, mysqlSignin } = require("../routes/mysqlAuth");
+const {mongodbVerify}=require("../routes/accountVerification")
 const router = Router();
 
 
@@ -38,6 +39,16 @@ router.post('/signin', (req, res) => {
     }
     else if (db_type === 'mysql') {
         mysqlSignin(username,password,res);
+    }
+})
+
+
+router.get('/verify-email', (req, res) => {
+    if (db_type === 'mongodb') {
+        mongodbVerify(req, res);
+    }
+    else if (db_type === 'mysql') {
+        mysqlAuth.mysqlVerify(req, res);
     }
 })
 
