@@ -6,6 +6,7 @@ const db_type = process.env.db_type;
 const User = require('../database/mongodb');
 const { initializeConnection } = require('../database/mysql');
 const mongodbAuth = require("../middleware/mongodbAuth");
+const mysqlAuth = require("../middleware/mysqlAuth");
 const router = Router();
 
 
@@ -169,6 +170,7 @@ router.post('/signin', (req, res) => {
         mysqlCheckUser(username,password,res);
     }
 })
+
 
 
 
