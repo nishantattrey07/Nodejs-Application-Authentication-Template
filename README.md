@@ -23,7 +23,7 @@ Registered users can log in to the application using their username and password
 
 ### Password Encryption
 
-The application uses [argon2](https://github.com/ranisalt/node-argon2") for password hashing, ensuring that user passwords are never stored in plain text in the database. This adds an extra layer of security against unauthorized access.
+The application uses [argon2](https://github.com/ranisalt/node-argon2) for password hashing, ensuring that user passwords are never stored in plain text in the database. This adds an extra layer of security against unauthorized access.
 
 ### JWT Authentication
 
@@ -47,7 +47,8 @@ To enable the forgot password functionality, ensure the following environment va
 ```properties
 email="<YOUR_EMAIL_ADDRESS_FOR_SENDING_RESET_LINKS>"
 email_password="<YOUR_EMAIL_PASSWORD>"
-
+```
+For Testing Purpose you can see how to setup this functionality for your gmail account [here](https://knowledge.workspace.google.com/kb/how-to-create-app-passwords-000009237)
 ## Database Configuration
 
 This project supports both MongoDB and MySQL, allowing you to select the database that best suits your project's needs. To configure your database, you must create a `.env` file in the root directory of your project and specify the following environment variables based on your chosen database:
