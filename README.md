@@ -8,7 +8,7 @@ This Node.js Application Authentication Template is designed to provide a robust
 - **User Login**: Enables registered users to log in using their credentials.
 - **Password Encryption**: Ensures that user passwords are securely stored using advanced hashing techniques.
 - **JWT Authentication**: Utilizes JSON Web Tokens (JWT) for secure and efficient user authentication.
-- **Email Verification**:(upcoming) Sends an email to users to verify their account upon registration.
+- **Email Verification**: Sends an email to users to verify their account upon registration.
 - **Password Reset**:(upcoming) Offers a password reset feature for users who have forgotten their passwords.
 
 ## Detailed Features
