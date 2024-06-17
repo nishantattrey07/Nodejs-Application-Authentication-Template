@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 const argon2 = require('argon2');
+const crypto = require('crypto');
 const { initializeConnection } = require('../database/mysql');
+const { sendVerificationEmail } = require('../routes/mailer');
 
 // Signup Section- Change the Parameters accordingly
 async function mysqlSignup(name, username, email, password, res) {
@@ -16,17 +18,20 @@ async function mysqlSignup(name, username, email, password, res) {
             return res.status(409).json({ message: 'User already exists' });
         }
 
+        // Generate a random verification token
+        const verificationToken = crypto.randomBytes(64).toString('hex');
         // Hash the password before saving the new user
         const hashedPassword = await argon2.hash(password);
 
         // Insert new user
         await connection.execute(
-            'INSERT INTO users (name, username, email, password) VALUES (?, ?, ?, ?)',
-            [name, username, email, hashedPassword]
+            'INSERT INTO users (name, username, email, password, verificationToken, isVerified) VALUES (?, ?, ?, ?, ?, ?)',
+            [name, username, email, hashedPassword, verificationToken, 0]
         );
         const token = jwt.sign({ username: username, email: email }, process.env.jwt_secret);
+        sendVerificationEmail(name, email, verificationToken);
         return res.status(201).json({
-            message: 'User created successfully',
+            message: 'Registration successful! Please check your email to verify your account.',
             token: token
         });
     } catch (error) {
@@ -69,3 +74,5 @@ module.exports = {
     mysqlSignup,
     mysqlSignin
 }
+
+
