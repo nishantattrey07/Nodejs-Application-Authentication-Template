@@ -10,7 +10,7 @@ const { validateUser } = require("../routes/validation");
 const { mongodbSignup, mongodbSignin } = require("../routes/mongodbAuth");
 const { mysqlSignup, mysqlSignin } = require("../routes/mysqlAuth");
 const { mongodbVerify, mysqldbVerify } = require("../routes/accountVerification")
-const { mongodbForgotPassword, mysqlForgotPassword } = require("../routes/forgotPassword");
+const { mongodbForgotPassword, mysqldbForgotPassword } = require("../routes/forgotPassword");
 const { mongodbResetPassword, mysqlResetPassword } = require("../routes/resetPassword");
 const router = Router();
 
@@ -59,7 +59,7 @@ router.post('/forgot-password', (req, res) => {
         mongodbForgotPassword(req, res);
     }
     else if (db_type === 'mysql') {
-        mysqlForgotPassword(req, res);
+        mysqldbForgotPassword(req, res);
     }
 })
 
