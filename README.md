@@ -29,7 +29,7 @@ The application uses [argon2](https://github.com/ranisalt/node-argon2") for pass
 
 After successful login, the application issues a JSON Web Token (JWT) to the user. This token is used for authenticating subsequent requests, allowing users to access protected routes and resources.
 
-### Email Verification(upcoming)
+### Email Verification
 
 Upon registration, the system sends a verification email to the user's provided email address. Users must click the verification link to activate their account, enhancing security and reducing spam accounts.
 
