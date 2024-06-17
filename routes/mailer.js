@@ -23,4 +23,20 @@ async function sendVerificationEmail(name,userEmail, verificationToken) {
     });
 }
 
-module.exports = { sendVerificationEmail };
+
+async function sendResetPasswordEmail(name, userEmail, resetToken) {
+    const verificationLink = `http://localhost:3000/api/auth/reset-password?token=${resetToken}`; // replace with your domain url
+    const mailOptions = {
+        from: process.env.email,
+        to: userEmail,
+        subject: 'Email Verification',
+        text: `Hi! ${name}, Click on the link to verify your email: ${verificationLink}`,
+        html: `<p>Hi! ${name},Click <a href="${verificationLink}">here</a> to reset your password.</p>`
+    };
+    transporter.sendMail(mailOptions, function (err, info) {
+        if (err) console.log(err);
+        else console.log('Email sent' + info);
+    });
+
+}
+module.exports = { sendVerificationEmail, sendResetPasswordEmail};

@@ -9,7 +9,9 @@ const mysqlAuth = require("../middleware/mysqlAuth");
 const { validateUser } = require("../routes/validation");
 const { mongodbSignup, mongodbSignin } = require("../routes/mongodbAuth");
 const { mysqlSignup, mysqlSignin } = require("../routes/mysqlAuth");
-const {mongodbVerify,mysqldbVerify}=require("../routes/accountVerification")
+const { mongodbVerify, mysqldbVerify } = require("../routes/accountVerification")
+const { mongodbForgotPassword, mysqlForgotPassword } = require("../routes/forgotPassword");
+const { mongodbResetPassword, mysqlResetPassword } = require("../routes/resetPassword");
 const router = Router();
 
 
@@ -32,7 +34,7 @@ router.post('/signup', (req, res) => {
 
 });
 
-router.post('/signin', (req, res) => { 
+router.post('/signin', (req, res) => {
     const { username, password } = req.body;
     if (db_type === 'mongodb') {
         mongodbSignin(username,password,res);
@@ -49,6 +51,24 @@ router.get('/verify-email', (req, res) => {
     }
     else if (db_type === 'mysql') {
         mysqldbVerify(req, res);
+    }
+})
+
+router.post('/forgot-password', (req, res) => {
+    if (db_type === 'mongodb') {
+        mongodbForgotPassword(req, res);
+    }
+    else if (db_type === 'mysql') {
+        mysqlForgotPassword(req, res);
+    }
+})
+
+router.post('/reset-password', (req, res) => {
+    if (db_type === 'mongodb') {
+        mongodbResetPassword(req, res);
+    }
+    else if (db_type === 'mysql') {
+        mysqlResetPassword(req, res);
     }
 })
 

@@ -3,6 +3,7 @@ const argon2 = require('argon2');
 const crypto = require('crypto');
 const User = require('../database/mongodb');
 const { sendVerificationEmail } = require('../routes/mailer');
+const { log } = require('console');
 
 
 
@@ -49,7 +50,7 @@ async function mongodbSignup(name, username, email, password, res) {
 async function mongodbSignin(username, password, res) {
     try {
         const user = await User.findOne({ username: username });
-        if (user) {
+        if (!user) {
             return res.status(404).json({ message: 'User not found' });
         } else {
             if (argon2.verify(user.password, password)) {
