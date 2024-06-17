@@ -36,6 +36,17 @@ Upon registration, the system sends a verification email to the user's provided 
 ### Password Reset
 
 If a user forgets their password, they can request a password reset. The system sends a reset link to the user's email, allowing them to set a new password securely.
+Password Reset is available in two ways:
+- By receiving the password reset link via email.
+- By providing the correct current password.
+
+**This feature is available for both MongoDB and MySQL databases**, ensuring compatibility with a wide range of backend setups.
+
+To enable the forgot password functionality, ensure the following environment variables are set in your `.env` file:
+
+```properties
+email="<YOUR_EMAIL_ADDRESS_FOR_SENDING_RESET_LINKS>"
+email_password="<YOUR_EMAIL_PASSWORD>"
 
 ## Database Configuration
 
