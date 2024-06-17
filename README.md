@@ -48,6 +48,8 @@ To enable the forgot password functionality, ensure the following environment va
 email="<YOUR_EMAIL_ADDRESS_FOR_SENDING_RESET_LINKS>"
 email_password="<YOUR_EMAIL_PASSWORD>"
 ```
+Don't Forget to change the url you are going to send in mail to reset password, [you can check it here](https://github.com/nishantattrey07/Nodejs-Application-Authentication-Template/blob/main/routes/mailer.js)
+
 For Testing Purpose you can see how to setup this functionality for your gmail account [here](https://knowledge.workspace.google.com/kb/how-to-create-app-passwords-000009237)
 ## Database Configuration
 
